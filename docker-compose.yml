@@ -9,7 +9,7 @@ services:
       context: C:\Projects\fast_api_demo_github
     working_dir: /home/ubuntu/fast_api_demo
     ports:
-      - 5000:80
+      - "5000:80"
     networks:
       - general
     volumes:
@@ -22,7 +22,7 @@ services:
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
     ports:
-       - 5432:5432
+       - "5432:5432"
     networks:
       - general
 

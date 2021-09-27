@@ -5,6 +5,7 @@ import src.schemas.garment_schema as garment_schema
 from src.repositories.database import SessionLocal, engine
 from src.repositories import garment_repository
 from src.repositories.garment_model import Base
+from src.repositories.garment_model import Garment
 
 Base.metadata.create_all(bind=engine)
 
@@ -34,7 +35,7 @@ def get_db(request: Request):
          tags=["garments"],
          summary="Get all garments",
          response_model=List[garment_schema.Garment])
-def get_garments(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def get_garments(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)) -> List[Garment]:
     return garment_repository.get_garments(db, skip=skip, limit=limit)
 
 
@@ -42,7 +43,7 @@ def get_garments(skip: int = 0, limit: int = 100, db: Session = Depends(get_db))
          tags=["garments"],
          summary="Get garment by id",
          response_model=garment_schema.Garment)
-def get_garment(garment_id: int, db: Session = Depends(get_db)):
+def get_garment(garment_id: int, db: Session = Depends(get_db)) -> Garment:
     return garment_repository.get_garment(db, garment_id=garment_id)
 
 
@@ -51,7 +52,7 @@ def get_garment(garment_id: int, db: Session = Depends(get_db)):
           summary="Create garment",
           status_code=201,
           response_model=garment_schema.Garment)
-def create_garment(garment: garment_schema.GarmentCreate, db: Session = Depends(get_db)):
+def create_garment(garment: garment_schema.GarmentCreate, db: Session = Depends(get_db)) -> Garment:
     return garment_repository.create_garment(db, garment)
 
 
@@ -59,7 +60,7 @@ def create_garment(garment: garment_schema.GarmentCreate, db: Session = Depends(
          tags=["garments"],
          summary="Update garment by id",
          )
-def update_garment(garment_id: int, garment: garment_schema.GarmentCreate, db: Session = Depends(get_db)):
+def update_garment(garment_id: int, garment: garment_schema.GarmentCreate, db: Session = Depends(get_db)) -> Garment:
     return garment_repository.update_garment(db, garment_id=garment_id, garment=garment)
 
 
@@ -67,6 +68,6 @@ def update_garment(garment_id: int, garment: garment_schema.GarmentCreate, db: S
             tags=["garments"],
             summary="Delete garment by id",
             status_code=204)
-def delete_garment(garment_id: int, db: Session = Depends(get_db)):
+def delete_garment(garment_id: int, db: Session = Depends(get_db)) -> None:
     garment_repository.delete_garment(db, garment_id=garment_id)
 

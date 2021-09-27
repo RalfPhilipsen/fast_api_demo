@@ -1,0 +1,35 @@
+version: "3.7"
+services:
+  pipeline-api:
+    image: fast_api_demo:latest
+    command: uvicorn src.main:app --workers 8 --host 0.0.0.0 --port 80 --timeout-keep-alive 600
+    container_name: fast_api_container
+    user: root
+    build:
+      context: C:\Projects\fast_api_demo_github
+    working_dir: /home/ubuntu/fast_api_demo
+    ports:
+      - 5000:80
+    networks:
+      - general
+    volumes:
+      - C:\Projects\fast_api_demo_github:/home/ubuntu/fast_api_demo
+
+
+  db:
+    image: postgis/postgis:latest
+    container_name: postgres_fast_api
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+       - 5432:5432
+    networks:
+      - general
+
+networks:
+  general:
+    name: general
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.10.1.0/16"

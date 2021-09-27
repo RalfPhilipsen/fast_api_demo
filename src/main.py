@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, Request, Response
 from typing import List
 from sqlalchemy.orm import Session
 import src.schemas.garment_schema as garment_schema
@@ -8,18 +8,29 @@ from src.repositories.garment_model import Base
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+app = FastAPI(
+    title="Garments Management",
+    description="UI for managing garments",
+    version="0.0.1"
+)
 
 
-def get_db():
-    db = SessionLocal()
+@app.middleware(middleware_type="http")
+async def db_session_middleware(request: Request, call_next):
+    response = Response("Internal server error", status_code=500)
     try:
-        yield db
+        request.state.db = SessionLocal()
+        response = await call_next(request)
     finally:
-        db.close()
+        request.state.db.close()
+    return response
 
 
-@app.get("/garments",
+def get_db(request: Request):
+    return request.state.db
+
+
+@app.get(path="/garments",
          tags=["garments"],
          summary="Get all garments",
          response_model=List[garment_schema.Garment])
@@ -27,26 +38,24 @@ def get_garments(skip: int = 0, limit: int = 100, db: Session = Depends(get_db))
     return garment_repository.get_garments(db, skip=skip, limit=limit)
 
 
-@app.get("/garments/{garment_id}",
+@app.get(path="/garments/{garment_id}",
          tags=["garments"],
          summary="Get garment by id",
          response_model=garment_schema.Garment)
 def get_garment(garment_id: int, db: Session = Depends(get_db)):
-    garment = garment_repository.get_garment(db, garment_id=garment_id)
-    return garment
+    return garment_repository.get_garment(db, garment_id=garment_id)
 
 
-@app.post("/garments",
+@app.post(path="/garments",
           tags=["garments"],
           summary="Create garment",
           status_code=201,
           response_model=garment_schema.Garment)
 def create_garment(garment: garment_schema.GarmentCreate, db: Session = Depends(get_db)):
-    db_garment = garment_repository.create_garment(db, garment)
-    return db_garment
+    return garment_repository.create_garment(db, garment)
 
 
-@app.put("/garments/{garment_id}",
+@app.put(path="/garments/{garment_id}",
          tags=["garments"],
          summary="Update garment by id",
          )

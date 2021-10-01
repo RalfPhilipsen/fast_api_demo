@@ -17,7 +17,8 @@ services:
 
 
   db:
-    image: postgis/postgis:latest
+    image: postgres:latest
+    restart: always
     container_name: postgres_fast_api
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust

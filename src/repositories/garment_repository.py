@@ -5,7 +5,7 @@ from fastapi import HTTPException
 from typing import List
 
 
-def create_garment(db: Session, garment: GarmentCreate):
+def create_garment(db: Session, garment: GarmentCreate) -> Garment:
     db_garment = Garment(
         brand_name=garment.brand_name,
         type=garment.type,

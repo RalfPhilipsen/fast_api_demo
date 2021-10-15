@@ -2,10 +2,11 @@ from fastapi import FastAPI, Depends, Request, Response
 from typing import List
 from sqlalchemy.orm import Session
 import src.schemas.garment_schema as garment_schema
-from src.repositories.database import SessionLocal, engine
-from src.repositories import garment_repository
-from src.repositories.garment_model import Base
+import src.schemas.user_schema as user_schema
+from src.repositories.database import SessionLocal, engine, Base
+from src.repositories import garment_repository, user_repository
 from src.repositories.garment_model import Garment
+from src.repositories.user_model import User
 
 Base.metadata.create_all(bind=engine)
 
@@ -42,23 +43,16 @@ def get_garments(skip: int = 0, limit: int = 100, db: Session = Depends(get_db))
 @app.get(path="/garments/{garment_id}",
          tags=["garments"],
          summary="Get garment by id",
-         response_model=garment_schema.Garment)
+         response_model=garment_schema.Garment,
+         responses={404: {"message": "Garment not found"}})
 def get_garment(garment_id: int, db: Session = Depends(get_db)) -> Garment:
     return garment_repository.get_garment(db, garment_id=garment_id)
-
-
-@app.post(path="/garments",
-          tags=["garments"],
-          summary="Create garment",
-          status_code=201,
-          response_model=garment_schema.Garment)
-def create_garment(garment: garment_schema.GarmentCreate, db: Session = Depends(get_db)) -> Garment:
-    return garment_repository.create_garment(db, garment)
 
 
 @app.put(path="/garments/{garment_id}",
          tags=["garments"],
          summary="Update garment by id",
+         response_model=garment_schema.Garment
          )
 def update_garment(garment_id: int, garment: garment_schema.GarmentCreate, db: Session = Depends(get_db)) -> Garment:
     return garment_repository.update_garment(db, garment_id=garment_id, garment=garment)
@@ -71,3 +65,30 @@ def update_garment(garment_id: int, garment: garment_schema.GarmentCreate, db: S
 def delete_garment(garment_id: int, db: Session = Depends(get_db)) -> None:
     garment_repository.delete_garment(db, garment_id=garment_id)
 
+
+@app.post(path="/garments/user/{user_id}",
+          tags=["garments"],
+          summary="Create garment for a user",
+          status_code=201,
+          response_model=garment_schema.Garment)
+def create_garment(user_id: int, garment: garment_schema.GarmentCreate, db: Session = Depends(get_db)) -> Garment:
+    return garment_repository.create_garment(db, user_id=user_id, garment=garment)
+
+
+@app.post(path="/users",
+          tags=["users"],
+          summary="Create user",
+          response_model=user_schema.User,
+          responses={409: {"message": "E-mail address is already in use"}},
+          status_code=201)
+def create_user(user: user_schema.UserCreate, db: Session = Depends(get_db)) -> User:
+    return user_repository.create_user(db, user=user)
+
+
+@app.get(path="/users/{user_id}",
+         tags=["users"],
+         summary="Get user by id",
+         response_model=user_schema.User,
+         responses={404: {"message": "User not found"}})
+def get_user(user_id: int, db: Session = Depends(get_db)) -> User:
+    return user_repository.get_user(db, user_id=user_id)

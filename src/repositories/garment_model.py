@@ -1,4 +1,5 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Float
+from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from sqlalchemy.orm import relationship
 from src.repositories.database import Base
 
 
@@ -10,3 +11,6 @@ class Garment(Base):
     type = Column(String)
     price = Column(Float)
     color = Column(String)
+    owner_id = Column(Integer, ForeignKey("users.id"))
+
+    owner = relationship("User", back_populates="garments")

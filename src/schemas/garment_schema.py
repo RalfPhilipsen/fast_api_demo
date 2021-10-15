@@ -21,6 +21,7 @@ class GarmentCreate(GarmentBase):
 
 class Garment(GarmentBase):
     id: int
+    owner_id: int
 
     class Config:
         orm_mode = True

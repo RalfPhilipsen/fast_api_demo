@@ -5,12 +5,10 @@ from fastapi import HTTPException
 from typing import List
 
 
-def create_garment(db: Session, garment: GarmentCreate) -> Garment:
+def create_garment(db: Session, user_id: int, garment: GarmentCreate) -> Garment:
     db_garment = Garment(
-        brand_name=garment.brand_name,
-        type=garment.type,
-        price=garment.price,
-        color=garment.color
+        **garment.dict(),
+        owner_id=user_id
     )
     db.add(db_garment)
     db.commit()
@@ -38,10 +36,7 @@ def delete_garment(db: Session, garment_id: int) -> None:
 
 def update_garment(db: Session, garment_id: int, garment: GarmentCreate) -> Garment:
     updated = db.query(Garment).filter(Garment.id == garment_id).update({
-        Garment.type: garment.type,
-        Garment.brand_name: garment.brand_name,
-        Garment.price: garment.price,
-        Garment.color: garment.color
+        **garment.dict()
     })
     if updated == 0:
         raise HTTPException(status_code=404, detail='Garment not found')

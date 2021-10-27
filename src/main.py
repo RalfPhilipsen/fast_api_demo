@@ -52,8 +52,7 @@ def get_garment(garment_id: int, db: Session = Depends(get_db)) -> Garment:
 @app.put(path="/garments/{garment_id}",
          tags=["garments"],
          summary="Update garment by id",
-         response_model=garment_schema.Garment
-         )
+         response_model=garment_schema.Garment)
 def update_garment(garment_id: int, garment: garment_schema.GarmentCreate, db: Session = Depends(get_db)) -> Garment:
     return garment_repository.update_garment(db, garment_id=garment_id, garment=garment)
 
@@ -61,6 +60,7 @@ def update_garment(garment_id: int, garment: garment_schema.GarmentCreate, db: S
 @app.delete("/garments/{garment_id}",
             tags=["garments"],
             summary="Delete garment by id",
+            responses={404: {"message": "User not found"}},
             status_code=204)
 def delete_garment(garment_id: int, db: Session = Depends(get_db)) -> None:
     garment_repository.delete_garment(db, garment_id=garment_id)

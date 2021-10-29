@@ -1,6 +1,6 @@
 def getVariables(branch) {
     if (branch == 'origin/develop') {
-        return ['3.68.97.65', 'top-fastapi-dev']
+        return ['3.70.193.141', 'top-fastapi-dev']
     } else {
         error("Unkown branch checked out")
     }
@@ -18,27 +18,25 @@ pipeline {
      stage('Build') {
        steps {
          configFileProvider(docker
-            [configFile(fileId: env.config_file, targetLocation: 'config')]) {
+            [configFile(fileId: env.config_file, targetLocation: 'src/config/')]) {
                  sh 'sudo docker build --tag fast_api_demo .'
-                 sh 'sudo docker run -d --name fast_api_demo fast_api_demo:latest'
+                 sh 'sudo docker tag fast_api_demo:latest pttrnsdevelopers/top-fast-api:latest'
             }
        }
      }
-     stage('Save image') {
+     stage('Push image') {
        steps {
-         sh 'sudo docker save fast_api_demo > fast_api_demo.tar'
+         sh 'sudo docker push pttrnsdevelopers/top-fast-api:tagname'
        }
      }
-
      stage('Deploy') {
        steps {
          script {
           def baseDir = '/projects/garments_api'
-          def loadImage = 'sudo docker load < fast_api_demo.tar'
+          def loadImage = 'sudo docker pull pttrnsdevelopers/top-fast-api:latest'
           def docker_compose_restart = 'sudo docker-compose up -d'
 
            sshagent(credentials : ['ssh_credentials']) {
-             sh "scp fast_api_demo jenkins@${env.server_ip}:${baseDir}"
              sh "ssh jenkins@${env.server_ip} 'cd ${baseDir} && ${loadImage} && ${docker_compose_restart}'"
            }
          }
@@ -47,8 +45,6 @@ pipeline {
    }
    post {
      always {
-       sh 'sudo docker stop fast_api_demo && sudo docker rm fast_api_demo'
-       sh 'sudo rm fast_api_demo.tar'
        script {
          String status
          switch (currentBuild.currentResult) {

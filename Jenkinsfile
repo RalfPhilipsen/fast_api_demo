@@ -26,7 +26,7 @@ pipeline {
      }
      stage('Push image') {
        steps {
-         sh 'sudo docker push pttrnsdevelopers/top-fast-api:tagname'
+         sh 'sudo docker push pttrnsdevelopers/top-fast-api:latest'
        }
      }
      stage('Deploy') {

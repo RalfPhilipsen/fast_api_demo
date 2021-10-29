@@ -17,7 +17,7 @@ pipeline {
    stages {
      stage('Build') {
        steps {
-         configFileProvider(
+         configFileProvider(docker
             [configFile(fileId: env.config_file, targetLocation: 'config')]) {
                  sh 'sudo docker build --tag fast_api_demo .'
                  sh 'sudo docker run -d --name fast_api_demo fast_api_demo:latest'

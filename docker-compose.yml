@@ -1,5 +1,16 @@
 version: "3.7"
 services:
+  db:
+    image: postgres:latest
+    restart: always
+    container_name: postgres_fast_api
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    networks:
+      - general
+
   pipeline-api:
     image: fast_api_demo:latest
     command: uvicorn src.main:app --workers 8 --host 0.0.0.0 --port 80 --timeout-keep-alive 600
@@ -14,18 +25,6 @@ services:
       - general
     volumes:
       - C:\Projects\fast_api_demo_github:/home/ubuntu/fast_api_demo
-
-
-  db:
-    image: postgres:latest
-    restart: always
-    container_name: postgres_fast_api
-    environment:
-      POSTGRES_HOST_AUTH_METHOD: trust
-    ports:
-       - "5432:5432"
-    networks:
-      - general
 
 networks:
   general:

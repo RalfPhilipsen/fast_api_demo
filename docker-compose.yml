@@ -5,7 +5,9 @@ services:
     restart: always
     container_name: postgres_fast_api
     environment:
-      POSTGRES_HOST_AUTH_METHOD: trust
+      - POSTGRES_USER=pttrns
+      - POSTGRES_PASSWORD=qwerty
+      - POSTGRES_DB=garments-api
     ports:
       - "5432:5432"
     networks:

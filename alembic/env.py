@@ -5,6 +5,9 @@ from sqlalchemy import pool
 
 from alembic import context
 
+import os
+import yaml
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -23,6 +26,12 @@ target_metadata = None
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
+
+with open(os.path.join("src", "config", "conf.yml"), 'r') as stream:
+    conf = yaml.safe_load(stream)
+    SQLALCHEMY_DATABASE_URL = conf['SQLALCHEMY_DATABASE_URL']
+
+config.set_main_option('sqlalchemy.url', SQLALCHEMY_DATABASE_URL)
 
 
 def run_migrations_offline():

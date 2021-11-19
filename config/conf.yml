@@ -1,1 +1,0 @@
-SQLALCHEMY_DATABASE_URL: postgresql://pttrns:qwerty@postgres_fast_api:5432/garments-api

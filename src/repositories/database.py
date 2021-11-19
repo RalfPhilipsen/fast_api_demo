@@ -5,7 +5,7 @@ import yaml
 import os
 
 
-with open(os.path.join("src", "config", "conf.yml"), 'r') as stream:
+with open(os.path.join("config", "conf.yml"), 'r') as stream:
     config = yaml.safe_load(stream)
     SQLALCHEMY_DATABASE_URL = config['SQLALCHEMY_DATABASE_URL']
 

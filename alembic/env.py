@@ -27,7 +27,7 @@ target_metadata = None
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
-with open(os.path.join("src", "config", "conf.yml"), 'r') as stream:
+with open(os.path.join("config", "conf.yml"), 'r') as stream:
     conf = yaml.safe_load(stream)
     SQLALCHEMY_DATABASE_URL = conf['SQLALCHEMY_DATABASE_URL']
 

@@ -15,7 +15,7 @@ def create_user(db: Session, user: UserCreate) -> User:
 
         return db_user
     except Exception as e:
-        if "already exists" in e.args[0]:
+        if "psycopg2.errors.UniqueViolation" in e.args[0]:
             raise HTTPException(status_code=409, detail='E-mail address is already in use')
         raise e
 

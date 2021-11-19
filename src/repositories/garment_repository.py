@@ -6,14 +6,19 @@ from typing import List
 
 
 def create_garment(db: Session, user_id: int, garment: GarmentCreate) -> Garment:
-    db_garment = Garment(
-        **garment.dict(),
-        owner_id=user_id
-    )
-    db.add(db_garment)
-    db.commit()
-    db.refresh(db_garment)
-    return db_garment
+    try:
+        db_garment = Garment(
+            **garment.dict(),
+            owner_id=user_id
+        )
+        db.add(db_garment)
+        db.commit()
+        db.refresh(db_garment)
+        return db_garment
+    except Exception as e:
+        if "psycopg2.errors.ForeignKeyViolation" in e.args[0]:
+            raise HTTPException(status_code=401, detail='Invalid user provided')
+        raise e
 
 
 def get_garment(db: Session, garment_id: int) -> Garment:

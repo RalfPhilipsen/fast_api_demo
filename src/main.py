@@ -26,7 +26,7 @@ with open(os.path.join("config", "conf.yml"), 'r') as stream:
     config = yaml.safe_load(stream)
     API_KEY = config['API_KEY']
 
-api_key_header_obj = APIKeyHeader(name="access_token", auto_error=False)
+api_key_header_obj = APIKeyHeader(name="api-key", auto_error=False)
 
 
 def get_api_key(api_key_header: str = Security(api_key_header_obj)):

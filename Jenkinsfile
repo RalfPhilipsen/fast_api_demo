@@ -21,12 +21,8 @@ pipeline {
             [configFile(fileId: env.config_file, targetLocation: 'src/config/')]) {
                  sh 'sudo docker build --tag fast_api_demo .'
                  sh 'sudo docker tag fast_api_demo:latest pttrnsdevelopers/top-fast-api:latest'
+                 sh 'sudo docker push pttrnsdevelopers/top-fast-api:latest'
             }
-       }
-     }
-     stage('Push image') {
-       steps {
-         sh 'sudo docker push pttrnsdevelopers/top-fast-api:latest'
        }
      }
      stage('Deploy') {

@@ -129,6 +129,6 @@ dmypy.json
 .pyre/
 
 # config
-config/
+config/conf.yml
 # other
 .idea/

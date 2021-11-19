@@ -28,8 +28,8 @@ def get_garment(db: Session, garment_id: int) -> Garment:
     return garment
 
 
-def get_garments(db: Session, skip: int = 0, limit: int = 100) -> List[Garment]:
-    return db.query(Garment).offset(skip).limit(limit).all()
+def get_garments(db: Session, limit: int = 100) -> List[Garment]:
+    return db.query(Garment).limit(limit).all()
 
 
 def delete_garment(db: Session, garment_id: int) -> None:
